@@ -1,0 +1,52 @@
+v2
+s_cookie='sec=1427321967; lastvideo=.flv;
+s_method='post
+s_postdata='
+regex='name="src" value="([^"]+)
+scrape
+
+if v1='
+	regex='"file","([^"]+)"
+	match htmRaw
+endif
+
+if v1='
+	regex='flashvars.file="([^"]+)
+	match htmRaw
+endif
+
+if v1='
+	error 'Couldn't retrieve source
+endif
+
+url=v1
+print url
+regex='^(http:)
+match url
+if v1>'
+	regex='ec_rate=\d+
+	replace url ec_rate=1500
+	play
+endif
+
+regex='flashvars.filekey="([^"]+)
+match htmRaw
+if v1='
+	error 'Couldn't retrieve key
+endif
+
+key=v1
+escape key
+s_url='http://www.movshare.net/api/player.api.php?pass=undefined&codes=undefined&file=&user=undefined&key=
+concat s_url key
+s_cookie='sec=1427321967; lastvideo=.flv;
+s_method='get
+regex='url=([^&]+)
+scrape
+if v1='
+	error 'Could not parse key results
+endif
+
+url=v1
+unescape url
+play
